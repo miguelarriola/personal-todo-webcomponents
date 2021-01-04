@@ -20,34 +20,37 @@ template.innerHTML = `
 `;
 
 class Toggle extends HTMLElement {
-  iconOff = 'radio_button_unchecked';
-  iconOn = 'check_circle_outline';
-
-  static get observedAttributes() {
-    return ['on'];
-  }
-
-  set on(value) {
-    const isOn = Boolean(value);
-    if (isOn) this.setAttribute('on', '');
-    else this.removeAttribute('on');
-  }
-
-  get on() {
-    return this.hasAttribute('on');
-  }
+  unpressedIcon = 'radio_button_unchecked';
+  pressedIcon = 'check_circle_outline';
+  icon = null;
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.render();
+    this.icon = this.shadowRoot.querySelector('i');
+    this.icon.textContent = this.unpressedIcon;
+  }
+
+  set pressed(value) {
+    const isPressed = Boolean(value);
+    if (isPressed) this.setAttribute('pressed', '');
+    else this.removeAttribute('pressed');
+  }
+
+  get pressed() {
+    return this.hasAttribute('pressed');
+  }
+
+  static get observedAttributes() {
+    return ['pressed'];
   }
 
   attributeChangedCallback(attrName, oldVal, newVal) {
     switch (attrName) {
-      case 'on':
-        this.render();
+      case 'pressed':
+        if (this.pressed) this.icon.textContent = this.pressedIcon;
+        else this.icon.textContent = this.unpressedIcon;
         break;
     }
   }
@@ -61,16 +64,13 @@ class Toggle extends HTMLElement {
   }
 
   onClick() {
-    this.on = !this.on;
+    this.pressed = !this.pressed;
     this.dispatchEvent(
-      new CustomEvent('change', { detail: { on: this.on }, bubbles: true })
+      new CustomEvent('change', {
+        detail: { pressed: this.pressed },
+        bubbles: true,
+      })
     );
-  }
-
-  render() {
-    const icon = this.shadowRoot.querySelector('i');
-    if (this.on) icon.textContent = this.iconOn;
-    else icon.textContent = this.iconOff;
   }
 }
 

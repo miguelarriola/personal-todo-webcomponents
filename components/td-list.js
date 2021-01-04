@@ -55,8 +55,10 @@ class List extends HTMLElement {
   onClick() {}
 
   render() {
-    this.tasks.forEach(({ title }) => {
+    this.tasks.forEach(({ _id, done, title }) => {
       const task = document.createElement('td-task');
+      task._id = _id;
+      task.done = done;
       task.title = title;
       this.shadowRoot.appendChild(task);
     });

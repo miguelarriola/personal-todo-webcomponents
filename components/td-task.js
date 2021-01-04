@@ -18,66 +18,71 @@ template.innerHTML = `
       padding: 12px 12px 12px 0;
       align-items: center;
     }
+    :host([done]) > p{
+      text-decoration: line-through;
+      color: #B9BDC6;
+    }
   </style>
   <td-toggle></td-toggle>
   <p></p>
 `;
 
 class Task extends HTMLElement {
-  toggle = null;
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+    this.toggle = this.shadowRoot.querySelector('td-toggle');
+    this.text = this.shadowRoot.querySelector('p');
+  }
 
-  static get observedAttributes() {
-    return ['title'];
+  set _id(value) {
+    this.setAttribute('_id', String(value));
+  }
+
+  get _id() {
+    return this.getAttribute('_id');
+  }
+
+  set done(value) {
+    if (Boolean(value)) this.setAttribute('done', '');
+    else this.removeAttribute('done');
+  }
+
+  get done() {
+    return this.hasAttribute('done');
   }
 
   set title(value) {
-    const title = String(value);
-    this.setAttribute('title', title);
+    this.setAttribute('title', String(value));
   }
 
   get title() {
     return this.getAttribute('title');
   }
 
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.toggle = this.shadowRoot.querySelector('td-toggle');
+  static get observedAttributes() {
+    return ['done', 'title'];
   }
 
   attributeChangedCallback(attrName, oldVal, newVal) {
     switch (attrName) {
       case 'title':
-        this.render();
+        if (oldVal !== newVal) this.text.textContent = this.title;
         break;
     }
   }
 
   connectedCallback() {
-    this.addEventListener('click', this.onClick);
-    this.toggle.addEventListener('change', this.onChange);
+    this.toggle.addEventListener('change', (e) => this.onChange(e));
   }
 
   disconnectedCallback() {
-    this.removeEventListener('click', this.onClick);
-    this.toggle.removeEventListener('change', (e) => this.onChange(e));
+    this.toggle.removeEventListener('change', this.onChange);
   }
 
-  onClick() {
-    // this.on = !this.on;
-    // this.dispatchEvent(
-    //   new CustomEvent('change', { detail: { on: this.on }, bubbles: true })
-    // );
-  }
-
-  onChange(e) {
-    console.log(e.detail);
-  }
-
-  render() {
-    const title = this.shadowRoot.querySelector('p');
-    title.textContent = this.title;
+  onChange({ detail: { pressed } }) {
+    this.done = pressed;
   }
 }
 
