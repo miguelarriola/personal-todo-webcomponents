@@ -1,6 +1,6 @@
-const toggleTpl = document.createElement('template');
+const template = document.createElement('template');
 
-toggleTpl.innerHTML = `
+template.innerHTML = `
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
     :host {
@@ -40,7 +40,7 @@ class Toggle extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(toggleTpl.content.cloneNode(true));
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.render();
   }
 

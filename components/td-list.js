@@ -1,8 +1,8 @@
 import { getTasks } from '../services/taskService.js';
 
-const listTpl = document.createElement('template');
+const template = document.createElement('template');
 
-listTpl.innerHTML = `
+template.innerHTML = `
   <style>
     :host {
       display: block;
@@ -30,7 +30,7 @@ class List extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(listTpl.content.cloneNode(true));
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   // attributeChangedCallback(attrName, oldVal, newVal) {

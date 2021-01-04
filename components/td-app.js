@@ -1,6 +1,6 @@
-const appTpl = document.createElement('template');
+const template = document.createElement('template');
 
-appTpl.innerHTML = `
+template.innerHTML = `
   <style>
     :host {
       display: block;
@@ -18,7 +18,7 @@ class App extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(appTpl.content.cloneNode(true));
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
 

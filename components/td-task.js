@@ -1,6 +1,6 @@
-const taskTpl = document.createElement('template');
+const template = document.createElement('template');
 
-taskTpl.innerHTML = `
+template.innerHTML = `
   <style>
     :host {
       display: flex;
@@ -42,7 +42,7 @@ class Task extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(taskTpl.content.cloneNode(true));
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.toggle = this.shadowRoot.querySelector('td-toggle');
   }
 
