@@ -13,48 +13,18 @@ template.innerHTML = `
 `;
 
 class List extends HTMLElement {
-  tasks = [];
-
-  // static get observedAttributes() {
-  //   return ['tasks'];
-  // }
-
-  // set tasks(value) {
-  //   this.tasks = [...this.tasks, value];
-  // }
-
-  // get tasks() {
-  //   return this.hasAttribute('tasks');
-  // }
-
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  // attributeChangedCallback(attrName, oldVal, newVal) {
-  //   switch (attrName) {
-  //     case 'on':
-  //       this.render();
-  //       break;
-  //   }
-  // }
-
   connectedCallback() {
-    this.getTasks();
+    this.showTasks();
   }
 
-  disconnectedCallback() {}
-
-  async getTasks() {
+  async showTasks() {
     this.tasks = await getTasks();
-    this.render();
-  }
-
-  onClick() {}
-
-  render() {
     this.tasks.forEach(({ _id, done, title }) => {
       const task = document.createElement('td-task');
       task._id = _id;
