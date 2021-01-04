@@ -15,7 +15,7 @@ taskTpl.innerHTML = `
     p {
       display: flex;
       margin: 0;
-      padding: 12px 0 12px 0;
+      padding: 12px 12px 12px 0;
       align-items: center;
     }
   </style>
@@ -24,14 +24,60 @@ taskTpl.innerHTML = `
 `;
 
 class Task extends HTMLElement {
+  toggle = null;
+
   static get observedAttributes() {
     return ['title'];
+  }
+
+  set title(value) {
+    const title = String(value);
+    this.setAttribute('title', title);
+  }
+
+  get title() {
+    return this.getAttribute('title');
   }
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(taskTpl.content.cloneNode(true));
+    this.toggle = this.shadowRoot.querySelector('td-toggle');
+  }
+
+  attributeChangedCallback(attrName, oldVal, newVal) {
+    switch (attrName) {
+      case 'title':
+        this.render();
+        break;
+    }
+  }
+
+  connectedCallback() {
+    this.addEventListener('click', this.onClick);
+    this.toggle.addEventListener('change', this.onChange);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('click', this.onClick);
+    this.toggle.removeEventListener('change', (e) => this.onChange(e));
+  }
+
+  onClick() {
+    // this.on = !this.on;
+    // this.dispatchEvent(
+    //   new CustomEvent('change', { detail: { on: this.on }, bubbles: true })
+    // );
+  }
+
+  onChange(e) {
+    console.log(e.detail);
+  }
+
+  render() {
+    const title = this.shadowRoot.querySelector('p');
+    title.textContent = this.title;
   }
 }
 

@@ -1,56 +1,63 @@
-const setTask = async (request, response, next) => {
-  const newTask = request.body;
+const host = 'https://todo-api-007.herokuapp.com';
+const resurce = 'tasks';
+const url = `${host}/${resurce}`;
 
-  newTask.scheduled = newTask.scheduled === 'true' ? true : false;
-
-  newTask.done = newTask.done === 'true' ? true : false;
-
-  const task = new Task(newTask);
-
+export const setTask = async (task) => {
   try {
-    const result = await task.save();
-    response.json(result);
+    await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(task),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    // window.location.href = 'index.html';
   } catch (error) {
-    response.json(error);
+    console.error(error);
   }
 };
 
-const getTasks = async (request, response, next) => {
+export const getTasks = async () => {
   try {
-    const result = await Task.find();
-    response.json(result);
+    const result = await fetch(url);
+    const tasks = await result.json();
+    return tasks;
   } catch (error) {
-    response.json(error);
+    console.error(error);
   }
 };
 
-const getTask = async (request, response, next) => {
+export const getTask = async (id) => {
   try {
-    const result = await Task.findById(request.params.id);
-    response.json(result);
+    const result = await fetch(`${url}/${id}`);
+    const task = await result.json();
+    return task;
   } catch (error) {
-    response.json(error);
+    console.error(error);
   }
 };
 
-const updateTask = async (request, response, next) => {
+export const updateTask = async (task) => {
   try {
-    const result = await Task.findOneAndUpdate(
-      { _id: request.params.id },
-      request.body,
-      { new: true }
-    );
-    response.json(result);
+    await fetch(`${url}/${task.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(task),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    // window.location.href = 'index.html';
   } catch (error) {
-    response.json(error);
+    console.error(error);
   }
 };
 
-const deleteTask = async (request, response, next) => {
+export const deleteTask = async (id) => {
   try {
-    const result = await Task.findOneAndDelete({ _id: request.params.id });
-    response.json(result);
+    await fetch(`${url}/${id}`, {
+      method: 'DELETE',
+    });
   } catch (error) {
-    response.json(error);
+    console.error(error);
   }
 };
