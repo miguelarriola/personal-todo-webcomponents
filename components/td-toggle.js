@@ -22,7 +22,6 @@ template.innerHTML = `
 class Toggle extends HTMLElement {
   unpressedIcon = 'radio_button_unchecked';
   pressedIcon = 'check_circle_outline';
-  icon = null;
 
   constructor() {
     super();
@@ -33,8 +32,7 @@ class Toggle extends HTMLElement {
   }
 
   set pressed(value) {
-    const isPressed = Boolean(value);
-    if (isPressed) this.setAttribute('pressed', '');
+    if (Boolean(value)) this.setAttribute('pressed', '');
     else this.removeAttribute('pressed');
   }
 
