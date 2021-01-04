@@ -1,11 +1,10 @@
 const taskTpl = document.createElement('template');
 
 taskTpl.innerHTML = `
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
     :host {
       display: flex;
-      padding: 14px 10px 14px 10px;
+      padding: 2px 0 2px 0;
       margin-bottom: 4px;
       box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.25);
       border-radius: 4px;
@@ -13,18 +12,22 @@ taskTpl.innerHTML = `
     i {
       margin-right: 10px;
     }
-    div {
+    p {
       display: flex;
+      margin: 0;
+      padding: 12px 0 12px 0;
       align-items: center;
     }
   </style>
-  <i class="material-icons">radio_button_unchecked</i>
-  <div>
-    <slot></slot>
-  </div>
+  <td-toggle></td-toggle>
+  <p></p>
 `;
 
 class Task extends HTMLElement {
+  static get observedAttributes() {
+    return ['title'];
+  }
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });

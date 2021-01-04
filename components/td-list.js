@@ -8,10 +8,8 @@ listTpl.innerHTML = `
       padding-bottom: 10px;
     }
   </style>
-  <td-task>Sacar al perro</td-task>
-  <td-task>Estudiar el curso de APIS de Traversy Media</td-task>
-  <td-task>Estudiar el curso de APIS de Traversy Media. Estudiar el curso de APIS de Traversy Media</td-task>
-  <td-task>Crear API</td-task>
+  <td-task></td-task>
+  <td-task title="Sacar al perro Sacar al perro Sacar"></td-task>
 `;
 
 class List extends HTMLElement {
