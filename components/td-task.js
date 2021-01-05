@@ -9,22 +9,19 @@ template.innerHTML = `
       box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.25);
       border-radius: 4px;
     }
-    i {
-      margin-right: 10px;
-    }
-    p {
+    .title {
       display: flex;
       margin: 0;
       padding: 12px 12px 12px 0;
       align-items: center;
     }
-    :host([done]) > p{
+    :host([done]) > .title{
       text-decoration: line-through;
       color: #B9BDC6;
     }
   </style>
   <td-toggle></td-toggle>
-  <p></p>
+  <slot class="title"></slot>
 `;
 
 class Task extends HTMLElement {
@@ -33,7 +30,6 @@ class Task extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.toggle = this.shadowRoot.querySelector('td-toggle');
-    this.text = this.shadowRoot.querySelector('p');
   }
 
   set _id(value) {
@@ -53,23 +49,13 @@ class Task extends HTMLElement {
     return this.hasAttribute('done');
   }
 
-  set taskTitle(value) {
-    this.setAttribute('taskTitle', String(value));
-  }
-
-  get taskTitle() {
-    return this.getAttribute('taskTitle');
-  }
-
   static get observedAttributes() {
-    return ['done', 'taskTitle'];
+    return ['done'];
   }
 
   attributeChangedCallback(attrName, oldVal, newVal) {
     switch (attrName) {
-      case 'taskTitle':
-        if (oldVal !== newVal) this.text.textContent = this.taskTitle;
-        break;
+      default:
     }
   }
 

@@ -29,7 +29,7 @@ class List extends HTMLElement {
       const task = document.createElement('td-task');
       task._id = _id;
       task.done = done;
-      task.taskTitle = title;
+      task.textContent = title;
       this.shadowRoot.appendChild(task);
     });
   }
