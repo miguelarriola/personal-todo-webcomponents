@@ -10,6 +10,14 @@ template.innerHTML = `
       padding-bottom: 10px;
     }
   </style>
+  <td-task></td-task>
+  <td-task></td-task>
+  <td-task></td-task>
+  <td-task></td-task>
+  <td-task></td-task>
+  <td-task></td-task>
+  <td-task></td-task>
+  <td-task></td-task>
 `;
 
 class List extends HTMLElement {
