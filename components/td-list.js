@@ -20,10 +20,10 @@ class List extends HTMLElement {
   }
 
   connectedCallback() {
-    this.showTasks();
+    this.listTasks();
   }
 
-  async showTasks() {
+  async listTasks() {
     this.tasks = await getTasks();
     this.tasks.forEach(({ _id, done, title }) => {
       const task = document.createElement('td-task');
