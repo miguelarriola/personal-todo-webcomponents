@@ -53,22 +53,22 @@ class Task extends HTMLElement {
     return this.hasAttribute('done');
   }
 
-  set title(value) {
-    this.setAttribute('title', String(value));
+  set taskTitle(value) {
+    this.setAttribute('taskTitle', String(value));
   }
 
-  get title() {
-    return this.getAttribute('title');
+  get taskTitle() {
+    return this.getAttribute('taskTitle');
   }
 
   static get observedAttributes() {
-    return ['done', 'title'];
+    return ['done', 'taskTitle'];
   }
 
   attributeChangedCallback(attrName, oldVal, newVal) {
     switch (attrName) {
-      case 'title':
-        if (oldVal !== newVal) this.text.textContent = this.title;
+      case 'taskTitle':
+        if (oldVal !== newVal) this.text.textContent = this.taskTitle;
         break;
     }
   }
