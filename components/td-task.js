@@ -53,22 +53,24 @@ class Task extends HTMLElement {
     return ['done'];
   }
 
-  attributeChangedCallback(attrName, oldVal, newVal) {
-    switch (attrName) {
-      default:
-    }
-  }
-
   connectedCallback() {
-    this.toggle.addEventListener('change', (e) => this.onChange(e));
+    this.addEventListener('toggleChange', (e) => this.onToggleChange(e));
   }
 
   disconnectedCallback() {
-    this.toggle.removeEventListener('change', this.onChange);
+    this.removeEventListener('toggleChange', this.onToggleChange);
   }
 
-  onChange({ detail: { pressed } }) {
+  onToggleChange({ detail: { pressed } }) {
     this.done = pressed;
+    if (this.done)
+      this.dispatchEvent(
+        new CustomEvent('taskDone', {
+          detail: { _id: this._id },
+          bubbles: true,
+          composed: true,
+        })
+      );
   }
 }
 

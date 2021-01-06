@@ -58,15 +58,16 @@ class Toggle extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.renoveEventListener('click', this.onClick);
+    this.removeEventListener('click', this.onClick);
   }
 
   onClick() {
     this.pressed = !this.pressed;
     this.dispatchEvent(
-      new CustomEvent('change', {
+      new CustomEvent('toggleChange', {
         detail: { pressed: this.pressed },
         bubbles: true,
+        composed: true,
       })
     );
   }
