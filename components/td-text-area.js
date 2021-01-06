@@ -4,43 +4,90 @@ const template = document.createElement('template');
 
 template.innerHTML = `
   <style>
-    :host { 
+    :host {
       display: block;
     }
-    .textbox {
-      padding: var(--margin-content);
+    textarea {
+      display: block;
+      box-sizing: border-box;
+      width: 100%;
+      padding: var(--content-margin);
+      -webkit-border-radius: var(--corner-radius);
+      -moz-border-radius: var(--corner-radius);
       border-radius: var(--corner-radius);
       background-color: var(--light-grey);
+      border: none;
+      overflow: auto;
       outline: none;
+      resize: none;
+      font-family: var(--main-font);
+      color: var(--color);
+      font-size: var(--font-size);
     }
-    .textbox[contenteditable]:empty::before {
-      content: "New task";
+    ::-webkit-input-placeholder {
+      font-family: var(--main-font);
       color: var(--dark-grey);
+      font-size: var(--font-size);
+    }
+    :-moz-placeholder {
+      font-family: var(--main-font);
+      color: var(--dark-grey);
+      font-size: var(--font-size);
+    }
+    ::-moz-placeholder {
+      font-family: var(--main-font);
+      color: var(--dark-grey);
+      font-size: var(--font-size);
+    }
+    :-ms-input-placeholder {
+      font-family: var(--main-font);
+      color: var(--dark-grey);
+      font-size: var(--font-size);
+    }
+    ::placeholder {
+      font-family: var(--main-font);
+      color: var(--dark-grey);
+      font-size: var(--font-size);
     }
   </style>
-  <div class="textbox" contenteditable></div>
+  <textarea placeholder="New task" rows="3"></textarea>
 `;
 
 class TextArea extends HTMLElement {
+  defaultMaxLength = 5;
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.textBox = this.shadowRoot.querySelector('.textbox');
-    this.maxLength = 10;
+    this.textBox = this.shadowRoot.querySelector('textarea');
+    this.textBox.setAttribute('maxlength', this.defaultMaxLength);
   }
 
   set maxLength(value) {
-    if (Number.isInteger(value)) this.setAttribute('maxLength', value);
-    else this.this.setAttribute('maxLength', this.defaulMaxLength);
+    console.log('set');
+    if (Number(value).isInteger()) this.setAttribute('maxLength', value);
+    else this.setAttribute('maxLength', this.defaultMaxLength);
   }
 
   get maxLength() {
+    console.log('get');
     return this.getAttribute('maxLength');
   }
 
   static get observedAttributes() {
     return ['maxLength'];
+  }
+
+  attributeChangedCallback(attrName, oldVal, newVal) {
+    console.log('change');
+    switch (attrName) {
+      case 'maxLength':
+        this.textBox.setAttribute('maxlength', this.maxLength);
+        break;
+      default:
+        break;
+    }
   }
 
   connectedCallback() {
