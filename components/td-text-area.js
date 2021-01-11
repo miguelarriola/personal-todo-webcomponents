@@ -7,7 +7,7 @@ template.innerHTML = `
     :host {
       display: block;
     }
-    textarea {
+    ::slotted(textarea) {
       display: block;
       box-sizing: border-box;
       width: 100%;
@@ -24,70 +24,42 @@ template.innerHTML = `
       color: var(--color);
       font-size: var(--font-size);
     }
-    ::-webkit-input-placeholder {
+    ::slotted(textarea)::-webkit-input-placeholder {
       font-family: var(--main-font);
       color: var(--dark-grey);
       font-size: var(--font-size);
     }
-    :-moz-placeholder {
+    ::slotted(textarea):-moz-placeholder {
       font-family: var(--main-font);
       color: var(--dark-grey);
       font-size: var(--font-size);
     }
-    ::-moz-placeholder {
+    ::slotted(textarea)::-moz-placeholder {
       font-family: var(--main-font);
       color: var(--dark-grey);
       font-size: var(--font-size);
     }
-    :-ms-input-placeholder {
+    ::slotted(textarea):-ms-input-placeholder {
       font-family: var(--main-font);
       color: var(--dark-grey);
       font-size: var(--font-size);
     }
-    ::placeholder {
+    ::slotted(textarea)::placeholder {
       font-family: var(--main-font);
       color: var(--dark-grey);
       font-size: var(--font-size);
     }
   </style>
-  <textarea placeholder="New task" rows="3"></textarea>
+  <slot class="textarea">
+    <textarea placeholder="New task" rows="3"></textarea>
+  </slot>
 `;
 
 class TextArea extends HTMLElement {
-  defaultMaxLength = 5;
-
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.textBox = this.shadowRoot.querySelector('textarea');
-    this.textBox.setAttribute('maxlength', this.defaultMaxLength);
-  }
-
-  set maxLength(value) {
-    console.log('set');
-    if (Number(value).isInteger()) this.setAttribute('maxLength', value);
-    else this.setAttribute('maxLength', this.defaultMaxLength);
-  }
-
-  get maxLength() {
-    console.log('get');
-    return this.getAttribute('maxLength');
-  }
-
-  static get observedAttributes() {
-    return ['maxLength'];
-  }
-
-  attributeChangedCallback(attrName, oldVal, newVal) {
-    console.log('change');
-    switch (attrName) {
-      case 'maxLength':
-        this.textBox.setAttribute('maxlength', this.maxLength);
-        break;
-      default:
-        break;
-    }
   }
 
   connectedCallback() {

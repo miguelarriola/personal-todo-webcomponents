@@ -16,7 +16,9 @@ template.innerHTML = `
       display: none;
     }
   </style>
-  <td-text-area></td-text-area>
+  <td-text-area>
+    <textarea placeholder="New task" rows="3" maxlength="240"></textarea>
+  </td-text-area>
 `;
 
 class BottomBar extends HTMLElement {
@@ -27,8 +29,6 @@ class BottomBar extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.prop = null;
-    this.txt = this.shadowRoot.querySelector('td-text-area');
-    this.txt.setAttribute('maxLength', 10);
   }
 
   set prop(value) {
