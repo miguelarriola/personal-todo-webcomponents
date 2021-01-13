@@ -1,6 +1,7 @@
 const template = document.createElement('template');
 
 template.innerHTML = `
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
     :host {
       display: flex;
@@ -20,7 +21,10 @@ template.innerHTML = `
       color: #B9BDC6;
     }
   </style>
-  <td-toggle></td-toggle>
+  <td-icon-button toggle class="hover-highlight">
+    <i class="material-icons">radio_button_unchecked</i>
+    <i class="material-icons" slot="icon2">check_circle_outline</i>
+  </td-icon-button>
   <slot class="title"></slot>
 `;
 
