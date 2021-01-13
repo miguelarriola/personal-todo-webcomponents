@@ -18,6 +18,7 @@ template.innerHTML = `
     <td-list></td-list>
   </div>
   <td-floating-button></td-floating-button>
+  <td-bottom-bar></td-bottom-bar>
 `;
 
 class App extends HTMLElement {

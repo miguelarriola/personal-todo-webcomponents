@@ -1,5 +1,3 @@
-import { namedKeyAttributeValues as keyValues } from '../helpers/textHelpers.js';
-
 const template = document.createElement('template');
 
 template.innerHTML = `
@@ -50,9 +48,7 @@ template.innerHTML = `
       font-size: var(--font-size);
     }
   </style>
-  <slot class="textarea">
-    <textarea placeholder="New task" rows="3"></textarea>
-  </slot>
+  <slot></slot>
 `;
 
 class TextArea extends HTMLElement {
@@ -60,24 +56,6 @@ class TextArea extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-  }
-
-  connectedCallback() {
-    this.textBox.addEventListener('keydown', (e) => this.onKeydown(e));
-  }
-
-  disconnectedCallback() {
-    this.textBox.removeEventListener('keydown', this.onKeydown);
-  }
-
-  onKeydown(event) {
-    const { key } = event;
-
-    if (key === 'Enter') event.preventDefault();
-    const isKeyString = !keyValues.some((val) => key === val);
-    const currentLength = this.textBox.textContent.length;
-    if (isKeyString && currentLength + 1 > this.maxLength)
-      event.preventDefault();
   }
 }
 
