@@ -5,6 +5,9 @@ template.innerHTML = `
   <style>
     :host {
       display: block;
+      // flex-flow: 
+      // justify-content: space-between;
+      // align-items: flex-end;
       box-sizing: border-box;
       position: fixed;
       bottom: 0;
@@ -19,12 +22,26 @@ template.innerHTML = `
     .material-icons.color-primary { 
       color: var(--primary); 
     }
+    td-text-area {
+      margin-right: 60px;
+    }
+    #add-button {
+      position: fixed;
+      bottom: 12px;
+      right: -12px;
+      transform: translateX(-50%);
+      --button-dimension: var(--icon-dimension-36);
+      --button-padding: 6px;
+    }
+    .material-icons.md-36 {
+      font-size: var(--icon-dimension-36); 
+    }
   </style>
   <td-text-area>
     <textarea placeholder="New task" rows="3" maxlength="240"></textarea>
   </td-text-area>
-  <td-icon-button class="hover-highlight">
-    <i class="material-icons color-primary">add_circle</i>
+  <td-icon-button id="add-button" class="hover-highlight">
+    <i class="material-icons color-primary md-36">add_circle</i>
   </td-icon-button>
 `;
 
