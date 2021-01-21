@@ -4,7 +4,7 @@ const url = `${host}/${resurce}`;
 
 export const setTask = async (task) => {
   try {
-    await fetch(url, {
+    return await fetch(url, {
       method: 'POST',
       body: JSON.stringify(task),
       headers: {

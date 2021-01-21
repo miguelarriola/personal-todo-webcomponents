@@ -20,6 +20,13 @@ template.innerHTML = `
     [hidden]{
       display: none;
     }
+    :host(.hover-highlight[disabled]:hover) { 
+      background-color: var(--button-bg-color,transparent);
+      cursor: no-drop;
+    }
+    :host([disabled]) ::slotted(*) { 
+      color: var(--icon-disabled) !important;
+    }
   </style>
   <slot id="icon"></slot>
   <slot id="icon2" name="icon2" hidden></slot>
@@ -43,8 +50,17 @@ class Button extends HTMLElement {
     return this.hasAttribute('pressed');
   }
 
+  set disabled(value) {
+    if (Boolean(value)) this.setAttribute('disabled', '');
+    else this.removeAttribute('disabled');
+  }
+
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+
   static get observedAttributes() {
-    return ['pressed'];
+    return ['pressed', 'disabled'];
   }
 
   attributeChangedCallback(attrName, oldVal, newVal) {
@@ -66,6 +82,7 @@ class Button extends HTMLElement {
   }
 
   onClick() {
+    if (this.disabled) return;
     this.pressed = !this.pressed;
     this.dispatchEvent(
       new CustomEvent('toggleChange', {

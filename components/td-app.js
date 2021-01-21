@@ -19,7 +19,7 @@ template.innerHTML = `
     .material-icons.md-48 {
       font-size: var(--icon-dimension-48);
     } 
-    .floatting-button{
+    .floating-button{
       --button-bg-color: var(--background);
       --button-dimension: var(--icon-dimension-48);
       --button-padding: 0;
@@ -35,10 +35,10 @@ template.innerHTML = `
     <h1>ToDo</h1>
     <td-list></td-list>
   </div>
-  <td-icon-button class="floatting-button">
+  <td-icon-button class="floating-button">
     <i class="material-icons color-primary md-48">add</i>
   </td-icon-button>
-  <td-bottom-bar></td-bottom-bar>
+  <td-bottom-bar  tabindex="-1"></td-bottom-bar>
 `;
 
 class App extends HTMLElement {
@@ -46,7 +46,28 @@ class App extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.addBtn = this.shadowRoot.querySelector('td-floating-button');
+    this.addButton = this.shadowRoot.querySelector('.floating-button');
+    this.bottomBar = this.shadowRoot.querySelector('td-bottom-bar');
+    this.taskList = this.shadowRoot.querySelector('td-list');
+  }
+
+  connectedCallback() {
+    this.addButton.addEventListener('click', this.onClick.bind(this));
+    this.bottomBar.addEventListener('taskAdded', this.onTaskAdded.bind(this));
+  }
+
+  disconnectedCallback() {
+    this.addButton.removeEventListener('click', this.onClick);
+    this.bottomBar.addEventListener('taskAdded', this.onTaskAdded);
+  }
+
+  onClick() {
+    this.bottomBar.hidden = false;
+    this.bottomBar.focus();
+  }
+
+  onTaskAdded() {
+    this.taskList.listTasks();
   }
 }
 

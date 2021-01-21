@@ -22,6 +22,7 @@
   --icon-dimension: 24px;
   --icon-dimension-36: 36px;
   --icon-dimension-48: 48px;
+  --icon-disabled: rgba(0, 0, 0, 0.26);
 }
 
 html,
