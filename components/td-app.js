@@ -38,7 +38,7 @@ template.innerHTML = `
   <td-icon-button class="floating-button">
     <i class="material-icons color-primary md-48">add</i>
   </td-icon-button>
-  <td-bottom-bar  tabindex="-1"></td-bottom-bar>
+  <td-bottom-bar tabindex="-1" hidden></td-bottom-bar>
 `;
 
 class App extends HTMLElement {

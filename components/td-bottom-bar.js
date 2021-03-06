@@ -74,41 +74,15 @@ class BottomBar extends HTMLElement {
 
   connectedCallback() {
     this.addEventListener('focus', this.onFocus);
-    this.textArea.addEventListener('keydown', (e) => this.onKeydown(e));
-    /*  */
-    this.textArea.addEventListener('beforeinput', (e) => this.onBeforeInput(e));
-    this.textArea.addEventListener('compositionstart', (e) =>
-      this.onCompositionstart(e)
-    );
-    this.textArea.addEventListener('compositionupdate', (e) =>
-      this.onCompositionupdate(e)
-    );
-    this.textArea.addEventListener('compositionend', (e) =>
-      this.onCompositionend(e)
-    );
-    /*  */
     this.textArea.addEventListener('input', (e) => this.onInput(e));
-    this.addButton.addEventListener('click', this.onClick.bind(this));
+    this.addButton.addEventListener('click', this.onAddButtonClick.bind(this));
     this.overlay.addEventListener('click', this.close.bind(this));
   }
 
   disconnectedCallback() {
     this.removeEventListener('focus', this.onFocus);
-    this.textArea.removeEventListener('keydown', this.onKeydown);
-    /*  */
-    this.textArea.removeEventListener('beforeinput', this.onBeforeInput);
-    this.textArea.removeEventListener(
-      'compositionstart',
-      this.onCompositionstart
-    );
-    this.textArea.removeEventListener(
-      'compositionupdate',
-      this.onCompositionupdate
-    );
-    this.textArea.removeEventListener('compositionend', this.onCompositionend);
-    /*  */
     this.textArea.removeEventListener('input', this.onInput);
-    this.addButton.removeEventListener('click', this.onClick);
+    this.addButton.removeEventListener('click', this.onAddButtonClick);
     this.overlay.removeEventListener('click', this.close);
   }
 
@@ -116,58 +90,14 @@ class BottomBar extends HTMLElement {
     this.textArea.focus();
   }
 
-  onKeydown(e) {
-    this.myInput = {
-      dataBefore: '',
-      typeBefore: '',
-      compStart: '',
-      compUpdate: '',
-      compEnd: '',
-    };
-    if (e.key === 'Enter') alert('KeyDown: submit task');
-    // if (e.key === 'Enter') {
-    //   e.preventDefault();
-    //   this.saveTask();
-    // }
-  }
-
-  onBeforeInput(e) {
-    const { data, inputType } = e;
-    // console.log(`Before Input - inputType => ${inputType}`);
-    this.myInput.dataBefore = data;
-    this.myInput.typeBefore = inputType;
-    // if (inputType === 'insertLineBreak') alert('Before: submit task');
-  }
-
-  onCompositionstart(e) {
-    const { data, locale } = e;
-    // console.log(`Composition Start - data => ${data}`);
-    this.myInput.compStart = data;
-  }
-  onCompositionupdate(e) {
-    const { data, locale } = e;
-    // console.log(`Composition Update - data => ${data}`);
-    this.myInput.compUpdate = data;
-    if (data.charAt(data.length - 1) === '\n') alert('Update: submit task');
-  }
-  onCompositionend(e) {
-    const { data, locale } = e;
-    // console.log(`Composition End - data => ${data}`);
-    this.myInput.compEnd = data;
-  }
-
   onInput(e) {
-    console.table([this.myInput]);
-    // this.label2.textContent = 'Input: ' + e.inputType;
-    // if (this.titleText) this.addButton.disabled = false;
-    // else this.addButton.disabled = true;
+    if (this.titleText) this.addButton.disabled = false;
+    else this.addButton.disabled = true;
   }
 
-  onClick() {
-    this.textArea.value = '';
-    console.clear();
-    // this.saveTask();
-    // this.close();
+  onAddButtonClick() {
+    this.saveTask();
+    this.close();
   }
 
   close() {
@@ -179,10 +109,12 @@ class BottomBar extends HTMLElement {
   }
 
   async saveTask() {
-    if (!this.titleText) return;
-    await setTask({ title: this.titleText });
-    const newEvent = new CustomEvent('taskAdded', { bubbles: true });
-    this.dispatchEvent(newEvent);
+    console.log('saving task');
+    const title = this.titleText;
+    if (!title) return;
+    await setTask({ title });
+    const taskAddedEvent = new CustomEvent('taskAdded', { bubbles: true });
+    this.dispatchEvent(taskAddedEvent);
     this.textArea.value = '';
   }
 }
