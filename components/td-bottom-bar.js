@@ -64,74 +64,91 @@ template.innerHTML = `
   </style>
   <div id="overlay"></div>
   <div id="content">
-    <input id="text-field" type="text" placeholder="New task" maxlength="10">
+    <form id="input-form">
+      <input id="text-field" type="text" placeholder="New task" maxlength="240">
+    </form>
     <div id="buttons">
-      <i id="confirm" class="button material-icons">arrow_back</i>
-      <i class="button material-icons" disabled>check</i>
+      <i id="go-back" class="button material-icons">arrow_back</i>
+      <i id="confirm" class="button material-icons" disabled>check</i>
     </div>
   </div>
 `;
 
 class BottomBar extends HTMLElement {
-  myInput = {};
-
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.overlay = this.shadowRoot.querySelector('#overlay');
     this.textField = this.shadowRoot.querySelector('#text-field');
+    this.goBackButton = this.shadowRoot.querySelector('#go-back');
     this.confirmButton = this.shadowRoot.querySelector('#confirm');
+    this.inputForm = this.shadowRoot.querySelector('#input-form');
   }
 
   connectedCallback() {
     this.addEventListener('focus', this.onFocus);
-    this.overlay.addEventListener('click', this.close.bind(this));
-    this.textField.addEventListener('input', (e) => this.onInput(e));
-    this.confirmButton.addEventListener(
-      'click',
-      this.onAddButtonClick.bind(this)
-    );
+    this.overlay.addEventListener('click', () => this.close());
+    this.textField.addEventListener('input', () => this.updateBtnState());
+    this.goBackButton.addEventListener('click', () => this.close());
+    this.confirmButton.addEventListener('click', () => this.onConfirm());
+    this.inputForm.addEventListener('submit', (e) => this.onSubmit(e));
   }
 
   disconnectedCallback() {
     this.removeEventListener('focus', this.onFocus);
     this.overlay.removeEventListener('click', this.close);
-    this.textField.removeEventListener('input', this.onInput);
-    this.confirmButton.removeEventListener('click', this.onAddButtonClick);
+    this.textField.removeEventListener('input', this.updateBtnState);
+    this.goBackButton.removeEventListener('click', this.close);
+    this.confirmButton.removeEventListener('click', this.onConfirm);
+    this.inputForm.removeEventListener('submit', this.onSubmit);
   }
 
   onFocus() {
     this.textField.focus();
   }
 
-  onInput(e) {
-    if (this.titleText) this.confirmButton.disabled = false;
-    else this.confirmButton.disabled = true;
-  }
-
-  onAddButtonClick() {
-    this.saveTask();
-    this.close();
-  }
-
   close() {
-    console.log('closing');
+    this.clearTextField();
     this.hidden = true;
   }
+
+  updateBtnState(e) {
+    if (this.titleText) this.confirmButton.removeAttribute('disabled');
+    else this.confirmButton.setAttribute('disabled', '');
+  }
+
+  onConfirm() {
+    const title = this.titleText;
+    if (title) {
+      this.saveTask(title);
+      this.close();
+    }
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+    const title = this.titleText;
+    if (title) {
+      this.saveTask(title);
+      this.clearTextField();
+    }
+  }
+
+  clearTextField = () => {
+    this.textField.value = '';
+    this.updateBtnState();
+  };
 
   get titleText() {
     return this.textField.value.trim();
   }
 
-  async saveTask() {
-    const title = this.titleText;
-    if (!title) return;
+  saveTask = async (title) => {
     await setTask({ title });
     const taskAddedEvent = new CustomEvent('taskAdded', { bubbles: true });
     this.dispatchEvent(taskAddedEvent);
-    this.textField.value = '';
-  }
+  };
 }
 
 customElements.define('td-bottom-bar', BottomBar);
