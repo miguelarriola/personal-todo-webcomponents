@@ -1,5 +1,4 @@
 import { setTask } from '../services/taskService.js';
-import { isMobile, isMobile2 } from '../helpers/deviceHelpers.js';
 
 const template = document.createElement('template');
 
@@ -109,7 +108,6 @@ class BottomBar extends HTMLElement {
   }
 
   async saveTask() {
-    console.log('saving task');
     const title = this.titleText;
     if (!title) return;
     await setTask({ title });
