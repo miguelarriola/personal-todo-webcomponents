@@ -11,51 +11,64 @@ template.innerHTML = `
     :host([hidden]) {
       display: none;
     }
-    #content, #overlay {
-      position: fixed;
-      width: 100%;
-      bottom: 0;
-    }
     #overlay {
+      position: fixed;
+      inset: 0;
+      width: 100%;
       height: 100%;
-      top: 0;
-      right: 0;
-      left: 0;
     }
     #content {
-      box-sizing: border-box;
       position: fixed;
-      padding: var(--content-margin);
+      bottom: 0;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 6px var(--content-margin);
       background-color: var(--background);
       box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.25);
       outline: none;
     }
-    .material-icons.color-primary { 
+    #text-field {
+      width: 100%;
+      padding: 6px 0;
+      border: none;
+      outline: none;
+      background-color: var(--background);
+      font-family: var(--main-font);
+      color: var(--color);
+      font-size: var(--font-size);
+    }
+    #text-field::placeholder {
+        font-family: var(--main-font);
+        color: var(--dark-grey);
+        font-size: var(--font-size);
+    }
+    #buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+    .button {
+      width: var(--icon-dimension-36); 
+      height: var(--icon-dimension-36); 
+      border-radius: 50%;
       color: var(--primary); 
-    }
-    td-text-area {
-      margin-right: 60px;
-    }
-    #add-button {
-      position: fixed;
-      bottom: 12px;
-      right: -12px;
-      transform: translateX(-50%);
-      --button-dimension: var(--icon-dimension-36);
-      --button-padding: 6px;
-    }
-    .material-icons.md-36 {
       font-size: var(--icon-dimension-36); 
+      -webkit-tap-highlight-color: transparent;
+    }
+    .button:hover:not([disabled]){
+      background-color: var(--light-grey);
+      cursor: pointer;
+    }
+    .button[disabled] { 
+      color: var(--icon-disabled);
     }
   </style>
   <div id="overlay"></div>
   <div id="content">
-    <td-text-area tabindex="0">
-      <textarea placeholder="New task" rows="3" maxlength="240"></textarea>
-    </td-text-area>
-    <td-icon-button id="add-button" class="hover-highlight" disabled tabindex="0">
-      <i class="material-icons color-primary md-36">add_circle</i>
-    </td-icon-button>
+    <input id="text-field" type="text" placeholder="New task" maxlength="10">
+    <div id="buttons">
+      <i id="confirm" class="button material-icons">arrow_back</i>
+      <i class="button material-icons" disabled>check</i>
+    </div>
   </div>
 `;
 
@@ -66,32 +79,35 @@ class BottomBar extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.textArea = this.shadowRoot.querySelector('textarea');
-    this.addButton = this.shadowRoot.querySelector('#add-button');
     this.overlay = this.shadowRoot.querySelector('#overlay');
+    this.textField = this.shadowRoot.querySelector('#text-field');
+    this.confirmButton = this.shadowRoot.querySelector('#confirm');
   }
 
   connectedCallback() {
     this.addEventListener('focus', this.onFocus);
-    this.textArea.addEventListener('input', (e) => this.onInput(e));
-    this.addButton.addEventListener('click', this.onAddButtonClick.bind(this));
     this.overlay.addEventListener('click', this.close.bind(this));
+    this.textField.addEventListener('input', (e) => this.onInput(e));
+    this.confirmButton.addEventListener(
+      'click',
+      this.onAddButtonClick.bind(this)
+    );
   }
 
   disconnectedCallback() {
     this.removeEventListener('focus', this.onFocus);
-    this.textArea.removeEventListener('input', this.onInput);
-    this.addButton.removeEventListener('click', this.onAddButtonClick);
     this.overlay.removeEventListener('click', this.close);
+    this.textField.removeEventListener('input', this.onInput);
+    this.confirmButton.removeEventListener('click', this.onAddButtonClick);
   }
 
   onFocus() {
-    this.textArea.focus();
+    this.textField.focus();
   }
 
   onInput(e) {
-    if (this.titleText) this.addButton.disabled = false;
-    else this.addButton.disabled = true;
+    if (this.titleText) this.confirmButton.disabled = false;
+    else this.confirmButton.disabled = true;
   }
 
   onAddButtonClick() {
@@ -100,11 +116,12 @@ class BottomBar extends HTMLElement {
   }
 
   close() {
+    console.log('closing');
     this.hidden = true;
   }
 
   get titleText() {
-    return this.textArea.value.trim();
+    return this.textField.value.trim();
   }
 
   async saveTask() {
@@ -113,7 +130,7 @@ class BottomBar extends HTMLElement {
     await setTask({ title });
     const taskAddedEvent = new CustomEvent('taskAdded', { bubbles: true });
     this.dispatchEvent(taskAddedEvent);
-    this.textArea.value = '';
+    this.textField.value = '';
   }
 }
 
