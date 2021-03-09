@@ -6,6 +6,11 @@ template.innerHTML = `
     :host {
       display: block;
     }
+    .container {
+      max-width: var(--app-max-width, 768px);
+      margin: 0 auto;
+      padding: 0;
+    }
     div {
       padding: 10px;
     }
@@ -31,14 +36,16 @@ template.innerHTML = `
       transform: translateX(-50%);
     }
   </style>
-  <div>
-    <h1>ToDo</h1>
-    <td-list></td-list>
+  <div class="container">
+    <div>
+      <h1>ToDo</h1>
+      <td-list></td-list>
+    </div>
+    <td-icon-button class="floating-button">
+      <i class="material-icons color-primary md-48">add</i>
+    </td-icon-button>
+    <td-bottom-bar tabindex="-1" hidden></td-bottom-bar>
   </div>
-  <td-icon-button class="floating-button">
-    <i class="material-icons color-primary md-48">add</i>
-  </td-icon-button>
-  <td-bottom-bar tabindex="-1" hidden></td-bottom-bar>
 `;
 
 class App extends HTMLElement {

@@ -26,6 +26,7 @@ template.innerHTML = `
       background-color: var(--background);
       box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.25);
       outline: none;
+      max-width: var(--app-max-width, 768px);
     }
     #text-field {
       width: 100%;

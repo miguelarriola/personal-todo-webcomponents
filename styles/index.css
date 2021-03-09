@@ -11,6 +11,7 @@
   --general-margin: 10px;
   --content-margin: 12px;
   --corner-radius: 4px;
+  --app-max-width: 768px;
 
   /* Font */
   --main-font: Arial, Helvetica, sans-serif;
