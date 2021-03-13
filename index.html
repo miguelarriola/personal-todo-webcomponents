@@ -30,6 +30,16 @@
     </div>
     <!-- <td-edit-panel hidden></td-edit-panel> -->
 
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const panel = document.querySelector("td-edit-panel");
+            panel.focus();
+            panel.taskId = '604c63ddac7a470017b12aed';
+            panel.addEventListener('taskListModified', e => console.log(e))
+        })
+    </script>
+
 </body>
 
 </html>
