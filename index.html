@@ -19,25 +19,45 @@
     <script src="./components/td-text-area.js" type="module"></script>
     <script src="./components/td-icon-button.js" type="module"></script>
     <script src="./components/td-edit-panel.js" type="module"></script>
+    <script src="./components/td-task-card.js" type="module"></script>
+    <script src="./components/widget/td-toggle-button.js" type="module"></script>
 </head>
 
 <body>
 
     <!-- <td-app></td-app> -->
-    <div style="max-width: 768px; margin: 0 auto;">
+
+    <!-- <div style="max-width: 768px; margin: 0 auto;">
         <td-edit-panel></td-edit-panel>
         <h1>Hello World</h1>
+    </div> -->
+
+    <div id="container" style="max-width: 768px; margin: 0 auto; padding: 12px;">
     </div>
-    <!-- <td-edit-panel hidden></td-edit-panel> -->
 
     <script>
-
         document.addEventListener('DOMContentLoaded', () => {
-            const panel = document.querySelector("td-edit-panel");
-            panel.focus();
-            panel.taskId = '604c63ddac7a470017b12aed';
-            panel.addEventListener('taskListModified', e => console.log(e))
+            const list = document.querySelector('#container')
+            const task = document.createElement('td-task-card');
+            task.taskId = '604d67c9cd9831001713ed74';
+            task.taskTitle = "Curse API's with NodeJS by Traversy Media";
+            task.taskDone = false;
+            list.appendChild(task);
+
+            // const tgBtn = document.createElement('td-toggle-button');
+            // tgBtn.toggleButton.iconPressed = 'radio_button_unchecked';
+            // tgBtn.toggleButton.iconUnpressed = 'check_circle_outline';
+            // tgBtn.toggleButton.pressed = true;
+            // list.appendChild(tgBtn);
         })
+    </script>
+    <script>
+        // document.addEventListener('DOMContentLoaded', () => {
+        //     const panel = document.querySelector("td-edit-panel");
+        //     panel.focus();
+        //     panel.taskId = '604c63ddac7a470017b12aed';
+        //     panel.addEventListener('taskListModified', e => console.log(e))
+        // })
     </script>
 
 </body>

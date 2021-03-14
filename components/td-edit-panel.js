@@ -7,6 +7,7 @@ template.innerHTML = `
   <style>
     :host {
       display: block;
+      // position: fixed;
     }
     :host([hidden]) {
       display: none;
