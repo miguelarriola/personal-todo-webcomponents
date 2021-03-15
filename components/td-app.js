@@ -11,7 +11,7 @@ template.innerHTML = `
       margin: 0 auto;
       padding: 0;
     }
-    div {
+    .content {
       padding: 10px;
     }
     h1 {
@@ -37,8 +37,7 @@ template.innerHTML = `
     }
   </style>
   <div class="container">
-    <div>
-      <h1>ToDo</h1>
+    <div class="content">
       <td-list></td-list>
     </div>
     <td-icon-button class="floating-button">

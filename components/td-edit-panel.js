@@ -7,24 +7,34 @@ template.innerHTML = `
   <style>
     :host {
       display: block;
-      // position: fixed;
+      box-sizing: border-box;
     }
     :host([hidden]) {
       display: none;
     }
-    .content {
+    .overlay {
       position: fixed;
-      top: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
+      background-color: var(--background);
+    }
+    .content {
+      display: block;
+      position: fixed;
       box-sizing: border-box;
+      z-index: 1;
+      top: 0;
+      max-width: var(--app-max-width, 768px);
+      width: 100%;
+      height: 100%;
       padding: var(--content-margin, 12px);
       background-color: var(--background);
       outline: none;
-      max-width: var(--app-max-width, 768px);
     }
     .button-bar {
       display: flex;
+      box-sizing: border-box;
       justify-content: space-between;
       margin-bottom: var(--content-margin, 12px);; 
     }
@@ -55,6 +65,7 @@ template.innerHTML = `
       font-family: var(--main-font);
       color: var(--color);
       font-size: var(--font-size);
+      box-sizing: border-box;
     }
     #text-field::placeholder {
         font-family: var(--main-font);
@@ -62,6 +73,7 @@ template.innerHTML = `
         font-size: var(--font-size);
     }
   </style>
+  <div class="overlay"></div>
   <div class="content">
     <div class="button-bar">
       <i id="go-back" class="button material-icons" title="Go back">arrow_back</i>
@@ -109,7 +121,6 @@ class EditPanel extends HTMLElement {
     this.deleteButton = this.shadowRoot.querySelector('#delete');
     this.confirmButton = this.shadowRoot.querySelector('#confirm');
     this.textField = this.shadowRoot.querySelector('#text-field');
-    this.onBuilding();
   }
 
   attributeChangedCallback() {
@@ -117,11 +128,12 @@ class EditPanel extends HTMLElement {
   }
 
   connectedCallback() {
+    this.setDefault();
     this.goBackButton.addEventListener('click', () => this.onGoBack());
     this.deleteButton.addEventListener('click', () => this.onDelete());
     this.confirmButton.addEventListener('click', () => this.onConfirm());
     this.textField.addEventListener('input', () => this.onInput());
-    this.textField.addEventListener('keydown', (e) => this.onInputKeydown(e));
+    this.textField.addEventListener('keydown', (e) => this.onKeydown(e));
   }
 
   disconnectedCallback() {
@@ -129,12 +141,10 @@ class EditPanel extends HTMLElement {
     this.deleteButton.removeEventListener('click', this.onDelete);
     this.confirmButton.removeEventListener('click', this.onConfirm);
     this.textField.removeEventListener('input', this.onInput);
-    this.textField.removeEventListener('keydown', (e) =>
-      this.onInputKeydown(e)
-    );
+    this.textField.removeEventListener('keydown', (e) => this.onKeydown(e));
   }
 
-  onBuilding() {
+  setDefault() {
     this.taskId = '';
     this.taskTitle = '';
   }
@@ -146,17 +156,18 @@ class EditPanel extends HTMLElement {
   }
 
   onGoBack() {
-    this.onBuilding();
+    this.setDefault();
     this.hidden = true;
   }
 
   async onDelete() {
     const deletedTask = await taskService.delete(this.taskId);
-    if (deletedTask)
-      this.notifyEvent('taskListModified', {
+    if (deletedTask) {
+      this.notifyEvent('itemChanged', {
         action: 'delete',
         item: this.composeTask(deletedTask),
       });
+    }
     this.onGoBack();
   }
 
@@ -166,7 +177,7 @@ class EditPanel extends HTMLElement {
       title: this.taskTitle,
     });
     if (updatedTask) {
-      this.notifyEvent('taskListModified', {
+      this.notifyEvent('itemChanged', {
         action: 'update',
         item: this.composeTask(updatedTask),
       });
@@ -179,7 +190,7 @@ class EditPanel extends HTMLElement {
     this.textField.value = this.textField.value.replace(/(\r\n|\n|\r)/gm, ' ');
   }
 
-  onInputKeydown(e) {
+  onKeydown(e) {
     if (e.key === 'Enter') this.onConfirm();
   }
 

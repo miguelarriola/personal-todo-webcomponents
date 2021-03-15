@@ -1,3 +1,8 @@
+import {
+  notifyEvent_v2,
+  updateProperty,
+} from '../../helpers/componentHelpers.js';
+
 const template = document.createElement('template');
 
 template.innerHTML = `
@@ -7,7 +12,7 @@ template.innerHTML = `
       display: inline-block;
       height: 24px;
       width: 24px;
-      padding: 12px;
+      padding: var(--content-margin, 12px);
       border-radius: 50%;
       -webkit-tap-highlight-color: transparent;
     }
@@ -52,36 +57,22 @@ class ToggleButton extends HTMLElement {
     this.removeEventListener('click', this.onClick);
   }
 
+  setDefault = () => {
+    updateProperty.bind(this)('unpressedIcon', 'radio_button_unchecked');
+    updateProperty.bind(this)('pressedIcon', 'check_circle_outline');
+    updateProperty.bind(this)('pressed', false);
+  };
+
   onStateChanged() {
-    this.toggleIcon.textContent = this.pressed
-      ? this.pressedIcon
-      : this.unpressedIcon;
+    if (this.pressed) this.toggleIcon.textContent = this.pressedIcon;
+    else this.toggleIcon.textContent = this.unpressedIcon;
   }
 
   onClick() {
     this.pressed = !this.pressed;
     const options = { detail: { pressed: this.pressed }, bubbles: true };
-    this.dispatchEvent(new CustomEvent('changed', options));
+    notifyEvent_v2.bind(this)('changed', options);
   }
-
-  setDefault = () => {
-    this.updateProperty('unpressedIcon', 'radio_button_unchecked');
-    this.updateProperty('pressedIcon', 'check_circle_outline');
-    this.updateProperty('pressed', false);
-  };
-
-  updateProperty = (property, defaultValue) => {
-    if (this.hasOwnProperty(property)) {
-      const value = this[property];
-      delete this[property];
-      this[property] = value;
-    } else {
-      this[property] = defaultValue;
-    }
-  };
-
-  notifyEvent = (name, detail) =>
-    this.dispatchEvent(new CustomEvent(name, { detail }));
 }
 
 customElements.define('td-toggle-button', ToggleButton);

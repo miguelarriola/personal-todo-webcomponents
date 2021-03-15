@@ -1,4 +1,4 @@
-import { getTasks, deleteTask } from '../services/taskService.js';
+import { getTasks } from '../services/taskService.js';
 
 const template = document.createElement('template');
 
@@ -9,12 +9,15 @@ template.innerHTML = `
       padding-top: 10px;
       padding-bottom: 10px;
     }
-    ul {
+    .list-container {
       padding: 0;
       margin: 0;
     }
+    .task-card {
+      margin-bottom: 4px;
+    }
   </style>
-  <ul></ul>
+  <ul id="task-list" class="list-container"></ul>
   <td-edit-panel id="edit-panel"></td-edit-panel>
 `;
 
@@ -23,55 +26,52 @@ class List extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.list = this.shadowRoot.querySelector('ul');
+    this.taskList = this.shadowRoot.querySelector('#task-list');
     this.editPanel = this.shadowRoot.querySelector('#edit-panel');
-    this.onBuilding();
   }
 
   connectedCallback() {
-    this.listTasks();
-    this.addEventListener('taskDone', (e) => this.onTaskDone(e));
-
-    this.addEventListener('click', (e) => this.onShowTaskDetails(e));
-    this.editPanel.addEventListener('taskListModified', (e) =>
-      this.taskListModified(e)
-    );
+    this.setDefault();
+    this.taskList.addEventListener('showDetail', (e) => this.onShowDetail(e));
+    this.taskList.addEventListener('itemChanged', () => this.onItemChanged());
+    this.editPanel.addEventListener('itemChanged', () => this.onItemChanged());
   }
 
   disconnectedCallback() {
-    this.removeEventListener('taskDone', this.onTaskDone);
-    this.removeEventListener('click', this.onShowTaskDetails);
+    this.taskList.removeEventListener('showDetail', this.onShowDetail);
+    this.taskList.removeEventListener('itemChanged', this.onItemChanged);
+    this.editPanel.removeEventListener('itemChanged', this.onItemChanged);
   }
 
-  onBuilding() {
+  setDefault() {
     this.editPanel.hidden = true;
-  }
-
-  async onTaskDone({ detail: { _id } }) {
-    await deleteTask(_id);
     this.listTasks();
   }
 
-  onShowTaskDetails() {
-    // panel.focus();
-    this.editPanel.taskId = this._id;
+  async listTasks() {
+    while (this.taskList.firstChild)
+      this.taskList.removeChild(this.taskList.firstChild);
+    this.tasks = await getTasks();
+    this.tasks.forEach(({ _id, done, title }) => {
+      const taskCard = document.createElement('td-task-card');
+      taskCard.classList.add('task-card');
+      taskCard.taskId = _id;
+      taskCard.taskTitle = title;
+      taskCard.taskDone = done;
+      this.taskList.appendChild(taskCard);
+    });
+  }
+
+  onShowDetail(e) {
+    const { detail } = e;
+    const { item } = detail;
+    const { id } = item;
+    this.editPanel.taskId = id;
     this.editPanel.hidden = false;
   }
 
-  taskListModified(e) {
-    console.log(e);
-  }
-
-  async listTasks() {
-    while (this.list.firstChild) this.list.removeChild(this.list.firstChild);
-    this.tasks = await getTasks();
-    this.tasks.forEach(({ _id, done, title }) => {
-      const task = document.createElement('td-task');
-      task._id = _id;
-      task.done = done;
-      task.textContent = title;
-      this.list.appendChild(task);
-    });
+  async onItemChanged() {
+    this.listTasks();
   }
 }
 
