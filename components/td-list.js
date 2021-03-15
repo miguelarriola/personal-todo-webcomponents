@@ -6,8 +6,10 @@ template.innerHTML = `
   <style>
     :host {
       display: block;
-      padding-top: 10px;
-      padding-bottom: 10px;
+      box-sizing: border-box;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
     }
     .list-container {
       padding: 0;

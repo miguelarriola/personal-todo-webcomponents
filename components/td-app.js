@@ -5,18 +5,17 @@ template.innerHTML = `
   <style>
     :host {
       display: block;
+      box-sizing: border-box;
     }
-    .container {
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    .app-container {
       max-width: var(--app-max-width, 768px);
       margin: 0 auto;
-      padding: 0;
     }
-    .content {
+    .app-content {
       padding: 10px;
-    }
-    h1 {
-      text-align: center;
-      margin: 0;
     }
     .material-icons.color-primary { 
       color: var(--primary); 
@@ -36,8 +35,8 @@ template.innerHTML = `
       transform: translateX(-50%);
     }
   </style>
-  <div class="container">
-    <div class="content">
+  <div class="app-container">
+    <div class="app-content">
       <td-list></td-list>
     </div>
     <td-icon-button class="floating-button">

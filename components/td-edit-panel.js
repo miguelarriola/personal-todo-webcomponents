@@ -9,32 +9,29 @@ template.innerHTML = `
       display: block;
       box-sizing: border-box;
     }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
     :host([hidden]) {
       display: none;
     }
-    .overlay {
+    .edit-overlay {
       position: fixed;
+      z-index: 1;
       inset: 0;
-      width: 100%;
-      height: 100%;
       background-color: var(--background);
     }
-    .content {
-      display: block;
-      position: fixed;
-      box-sizing: border-box;
-      z-index: 1;
-      top: 0;
+    .edit-container {
       max-width: var(--app-max-width, 768px);
-      width: 100%;
-      height: 100%;
-      padding: var(--content-margin, 12px);
-      background-color: var(--background);
+      margin: 0 auto;
+    }
+    .edit-content {
+      height: 100vh;
+      padding: var(--margin-10, 10px);
       outline: none;
     }
     .button-bar {
       display: flex;
-      box-sizing: border-box;
       justify-content: space-between;
       margin-bottom: var(--content-margin, 12px);; 
     }
@@ -53,9 +50,9 @@ template.innerHTML = `
     .button[data-disabled=true] { 
       color: var(--icon-disabled);
     }
-    #text-field {
+    .text-field {
       width: 100%;
-      height: 40%;
+      height: 100%;
       padding: 0;
       border: none;
       outline: none;
@@ -65,22 +62,22 @@ template.innerHTML = `
       font-family: var(--main-font);
       color: var(--color);
       font-size: var(--font-size);
-      box-sizing: border-box;
     }
-    #text-field::placeholder {
-        font-family: var(--main-font);
-        color: var(--dark-grey);
-        font-size: var(--font-size);
+    .text-field::placeholder {
+      color: var(--dark-grey);
     }
   </style>
-  <div class="overlay"></div>
-  <div class="content">
-    <div class="button-bar">
-      <i id="go-back" class="button material-icons" title="Go back">arrow_back</i>
-      <i id="delete" class="button material-icons" title="Delete task">delete_outline</i>
-      <i id="confirm" class="button material-icons" title="Confirm changes">check</i>
+  <div class="edit-overlay">
+    <div class="edit-container">
+      <div class="edit-content">
+        <div class="button-bar">
+          <i id="go-back" class="button material-icons" title="Go back">arrow_back</i>
+          <i id="delete" class="button material-icons" title="Delete task">delete_outline</i>
+          <i id="confirm" class="button material-icons" title="Confirm changes">check</i>
+        </div>
+        <textarea id="text-field" class="text-field" placeholder="Task title" maxlength="240"></textarea>
+      </div>
     </div>
-    <textarea id="text-field" placeholder="Title task" maxlength="240"></textarea>
   </div>
 `;
 
